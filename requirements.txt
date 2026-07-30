@@ -1,0 +1,10 @@
+# torch / torchaudio は setup.bat が PyTorch 公式インデックス (cu126) から先に入れる。
+# 4.56 で pipeline の torch_dtype が dtype に変わったので下限を合わせる。
+transformers>=4.56,<5
+PySide6>=6.7
+av>=12.0
+numpy>=1.26
+# Hugging Face からのモデル取得を速くする（任意だが体感差が大きい）。
+hf_xet>=1.0
+# 話者分離。使わないなら外してもアプリは動く（機能だけ無効になる）。
+pyannote.audio>=3.1

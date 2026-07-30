@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# 仮想環境（このプロジェクトでは %USERPROFILE%\.venvs\ に置くが、念のため）
+.venv/
+venv/
+env/
+
+# 実行時に生成されるもの
+*.log
+error.log
+
+# 文字起こしの出力（サンプルを置く場合は !samples/ などで明示的に許可する）
+*.srt
+*.vtt
+
+# エディタ・OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Google ドライブ
+desktop.ini
+.tmp.drivedownload/
+.tmp.driveupload/
