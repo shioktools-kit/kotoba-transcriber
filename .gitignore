@@ -27,3 +27,7 @@ Thumbs.db
 desktop.ini
 .tmp.drivedownload/
 .tmp.driveupload/
+
+# デザインハンドオフ資料（社内向け作業ファイル。リポジトリには含めない）
+Kotoba-transcriber-dev再デザイン/
+Kotoba-transcriber-dev再デザイン.zip
