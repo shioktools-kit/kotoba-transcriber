@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QScrollArea,
+    QSizePolicy,
     QStackedWidget,
     QVBoxLayout,
     QWidget,
@@ -60,11 +61,12 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle(APP_NAME)
-        self.resize(1240, 980)
-        # レイアウトが窮屈な状態で QSplitter の比率再配分が不安定になるのを避けるため、
-        # 実際に必要な高さ（ヘッダー・ドロップ領域・ファイル一覧・ログ・言語・実行バー
-        # すべてが無理なく収まる高さ）を下回れないようにする。
-        self.setMinimumSize(900, 1000)
+        self.resize(1080, 760)
+        # メインページ・設定ページとも中身は QScrollArea に収めてあるので、
+        # ウィンドウを縮めたときはレイアウトが壊れる代わりにスクロールバーが
+        # 出るだけになる。ここでの最小サイズはヘッダーとタイトルバーが
+        # 見苦しくならない程度の控えめな下限でよい。
+        self.setMinimumSize(760, 560)
 
         self._items: list[FileItem] = []
         self._transcriber = Transcriber()
@@ -96,7 +98,12 @@ class MainWindow(QMainWindow):
         self._card = QWidget()
         self._card.setObjectName("card")
         self._card.setAttribute(Qt.WA_StyledBackground, True)
-        self._card.setMaximumWidth(1400)
+        # 幅の上限は設けない。キャンバスの余白（28px）分だけ残して、
+        # フルスクリーン時も画面をいっぱいに使う。
+        # 横方向は「余白があるだけ伸びたい」ポリシーを明示する。既定の
+        # Preferred のままだと、中身（QStackedWidget 経由の QScrollArea）
+        # の sizeHint に留まってしまい、ウィンドウを広げても伸びてくれない。
+        self._card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         card_layout = QVBoxLayout(self._card)
         card_layout.setContentsMargins(0, 0, 0, 0)
         card_layout.setSpacing(0)
@@ -118,11 +125,15 @@ class MainWindow(QMainWindow):
         self._main_page.startClicked.connect(self._start)
         self._main_page.cancelClicked.connect(self._cancel)
 
+        main_scroll = QScrollArea()
+        main_scroll.setWidgetResizable(True)
+        main_scroll.setFrameShape(QScrollArea.NoFrame)
         main_wrap = QWidget()
         main_wrap_layout = QVBoxLayout(main_wrap)
         main_wrap_layout.setContentsMargins(24, 24, 24, 30)
         main_wrap_layout.addWidget(self._main_page)
-        self._stack.addWidget(main_wrap)
+        main_scroll.setWidget(main_wrap)
+        self._stack.addWidget(main_scroll)
 
         self._settings_page = SettingsPage()
         self._settings_page.themeChanged.connect(self._on_theme_changed)
